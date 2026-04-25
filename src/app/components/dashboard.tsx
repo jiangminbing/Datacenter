@@ -1,23 +1,24 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { Database, Code, Activity, TrendingUp } from "lucide-react";
-import { getDataSources, getApis } from "../lib/storage";
+import { Database, Code, Activity, Users } from "lucide-react";
+import { getDataSources, getApis, getApiUsers } from "../lib/storage";
 
 export function Dashboard() {
   const [stats, setStats] = useState({
     dataSources: 0,
     apis: 0,
-    queries: 0,
+    apiUsers: 0,
     activeConnections: 0,
   });
 
   useEffect(() => {
     const dataSources = getDataSources();
     const apis = getApis();
+    const apiUsers = getApiUsers();
     setStats({
       dataSources: dataSources.length,
       apis: apis.length,
-      queries: 156, // 模拟数据
+      apiUsers: apiUsers.filter(user => user.status === 'active').length,
       activeConnections: dataSources.filter(ds => ds.status === 'connected').length,
     });
   }, []);
@@ -38,16 +39,16 @@ export function Dashboard() {
       bgColor: "bg-green-50",
     },
     {
-      title: "活跃连接",
-      value: stats.activeConnections,
-      icon: Activity,
+      title: "API 用户",
+      value: stats.apiUsers,
+      icon: Users,
       color: "text-purple-600",
       bgColor: "bg-purple-50",
     },
     {
-      title: "查询次数",
-      value: stats.queries,
-      icon: TrendingUp,
+      title: "活跃连接",
+      value: stats.activeConnections,
+      icon: Activity,
       color: "text-orange-600",
       bgColor: "bg-orange-50",
     },

@@ -57,11 +57,20 @@ export function DataSources() {
     const labels: Record<string, string> = {
       'mysql': 'MySQL',
       'postgresql': 'PostgreSQL',
+      'oracle': 'Oracle',
+      'sqlserver': 'SQL Server',
+      'dm': '达梦数据库',
+      'doris': 'Apache Doris',
+      'clickhouse': 'ClickHouse',
       'mongodb': 'MongoDB',
+      'redis': 'Redis',
+      'hive': 'Apache Hive',
+      'greenplum': 'Greenplum',
+      'elasticsearch': 'Elasticsearch',
       'rest-api': 'REST API',
       'graphql': 'GraphQL',
     };
-    return labels[type] || type;
+    return labels[type] || type.toUpperCase();
   };
 
   return (

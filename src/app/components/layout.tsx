@@ -1,5 +1,5 @@
 import { Outlet, NavLink } from "react-router";
-import { Database, Home, Code, Search } from "lucide-react";
+import { Database, Home, Code, Search, Users, Activity } from "lucide-react";
 import { cn } from "./ui/utils";
 
 export function Layout() {
@@ -7,6 +7,8 @@ export function Layout() {
     { path: "/", label: "概览", icon: Home },
     { path: "/data-sources", label: "数据源", icon: Database },
     { path: "/apis", label: "API 管理", icon: Code },
+    { path: "/api-users", label: "API 用户", icon: Users },
+    { path: "/api-logs", label: "调用记录", icon: Activity },
     { path: "/query", label: "查询编辑器", icon: Search },
   ];
 

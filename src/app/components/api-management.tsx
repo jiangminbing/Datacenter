@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { Plus, Pencil, Trash2, Code, Copy } from "lucide-react";
+import { Plus, Pencil, Trash2, Code, Copy, Users } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
 import { ApiForm } from "./api-form";
-import { getApis, deleteApi, Api } from "../lib/storage";
+import { getApis, deleteApi, Api, getApiUsers, ApiUser } from "../lib/storage";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -20,17 +20,25 @@ import { Badge } from "./ui/badge";
 
 export function ApiManagement() {
   const [apis, setApis] = useState<Api[]>([]);
+  const [apiUsers, setApiUsers] = useState<ApiUser[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingApi, setEditingApi] = useState<Api | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
   const loadApis = () => {
     setApis(getApis());
+    setApiUsers(getApiUsers());
   };
 
   useEffect(() => {
     loadApis();
   }, []);
+
+  const getAuthorizedUsers = (apiId: string): ApiUser[] => {
+    return apiUsers.filter(user =>
+      user.status === 'active' && user.allowedApiIds.includes(apiId)
+    );
+  };
 
   const handleDelete = (id: string) => {
     if (deleteApi(id)) {
@@ -164,12 +172,41 @@ export function ApiManagement() {
                   </div>
                 </div>
               </CardHeader>
-              <CardContent>
+              <CardContent className="space-y-4">
                 <div className="bg-gray-900 rounded-lg p-4 overflow-x-auto">
                   <code className="text-sm text-green-400 font-mono whitespace-pre">
                     {api.query}
                   </code>
                 </div>
+
+                {(() => {
+                  const authorizedUsers = getAuthorizedUsers(api.id);
+                  return (
+                    <div className="pt-4 border-t">
+                      <div className="flex items-center gap-2 mb-3">
+                        <Users className="size-4 text-gray-500" />
+                        <span className="text-sm font-medium text-gray-700">
+                          授权用户 ({authorizedUsers.length})
+                        </span>
+                      </div>
+                      {authorizedUsers.length === 0 ? (
+                        <p className="text-sm text-gray-500">暂无授权用户</p>
+                      ) : (
+                        <div className="flex flex-wrap gap-2">
+                          {authorizedUsers.map((user) => (
+                            <Badge
+                              key={user.id}
+                              variant="outline"
+                              className="bg-blue-50 text-blue-700 border-blue-200"
+                            >
+                              {user.name}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
               </CardContent>
             </Card>
           ))}
